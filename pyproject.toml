@@ -22,3 +22,4 @@ changelog_file = "CHANGELOG.md"             # changelog file
 build_command = "poetry build"              # build dists
 dist_path = "dist/"                         # where to put dists
 remove_dist = false                         # don't remove dists
+patch_without_tag = true                    # patch release by default
