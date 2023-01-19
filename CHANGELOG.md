@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.2 (2023-01-19)
+
+
 ## v0.0.1 (2023-01-19)
 ### Documentation
 * **README:** Fixing badge to mark version 0.1.0 ([`b674b64`](https://github.com/armino112/Exjobb/commit/b674b64999e9c817f120b7cd0ee0f0e081b106dc))
