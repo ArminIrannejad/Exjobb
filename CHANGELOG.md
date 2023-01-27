@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.0 (2023-01-27)
+### Feature
+* **tutorial.ipynb:** Added new feature Geometry Optimization to workflow ([`bbc7f64`](https://github.com/armino112/Exjobb/commit/bbc7f640e1df29573fdd7d6f4f37da87214076e2))
+
 ## v0.0.5 (2023-01-19)
 
 
