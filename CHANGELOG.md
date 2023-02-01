@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2023-02-01)
+### Feature
+* **tutorial.ipynb:** Equation of State added. Right now it is comparing EOS for Silver with EMT-potential and Lennard-Jones-Potential ([`61a6d20`](https://github.com/armino112/Exjobb/commit/61a6d207c31ccb4776bd9a5ad0346992a571b73e))
+
 ## v0.1.1 (2023-01-27)
 ### Fix
 * **tutorial.ipynb:** Fixed old outputs with new updated ones ([`4b0ae26`](https://github.com/armino112/Exjobb/commit/4b0ae26f0bdfa2cd0d679b049d338113763485f8))
