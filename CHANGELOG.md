@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2023-03-16)
+### Feature
+* **phononmin.py:** New program added to calculate phonon DOS using Phonopy ([`19b2c74`](https://github.com/ArminIrannejad/Exjobb/commit/19b2c744bd682695034990b0863cc78e8733f38c))
+
 ## v0.2.2 (2023-02-23)
 
 
