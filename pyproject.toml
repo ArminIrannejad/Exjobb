@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "exjobb"
-version = "0.3.8"
+version = "0.3.9"
 description = "Calculating vibrational properties of intercalation compounds from first principles."
 authors = ["armino112 <armin.irannejad@gmail.com>"]
 readme = "README.md"
