@@ -1,3 +1,17 @@
+Visualisation.ipynb: 
+Jupyter Notebook to visualise different phonon DOS using plotly.go
+
+getdos.conf, mode_follow.conf:
+conf-files for phonopy each for different purposes. 
+Example: "phonopy -p getdos.conf" to get the DOS
+
+opt1.traj:
+is the trajectory file from geometry optimisation BFGS. It is on the 1400 structures STDEV1E-2 with a fmax of 0.1
+
+mode_follow.bash:
+Bash-script to create a desired amount of modulated structures.
+
+
 #### Making MPOSCAR-files into a db with named keys
 ```
 from ase.io.vasp import read_vasp
