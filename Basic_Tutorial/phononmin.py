@@ -3,6 +3,7 @@ import numpy as np
 from phonopy import Phonopy
 from phonopy.structure.atoms import PhonopyAtoms
 from phonopy.interface.calculator import read_crystal_structure
+import phonopy
 from ase import Atoms
 from ase.io import write, read
 from ase.calculators.mixing import LinearCombinationCalculator
@@ -23,7 +24,8 @@ def run_gap(calc, phonon):
         cell = Atoms(symbols=scell.get_chemical_symbols(),
                      scaled_positions=scell.get_scaled_positions(),
                      cell=scell.get_cell(),
-                     pbc=True)
+                     pbc=True
+                     )
         cell.set_calculator(calc)
         forces = cell.get_forces()
         drift_force = forces.sum(axis=0)
@@ -39,11 +41,11 @@ def obtain_phonopy_mesh(phonon, mesh):
 
 def print_freq_at_G(phonon):
     print('')
-    print("[Phonopy] Phonon frequencies at Gamma:")
+    print('[Phonopy] Phonon frequencies at Gamma:')
     for i, freq in enumerate(phonon.get_frequencies((0, 0, 0))):
-        print("[Phonopy] =: .5f THz" %  (i + 1, freq)) # THz
+        print('[Phonopy] =: .5f THz' %  (i + 1, freq)) # THz
 
-def obtain_phonon_dispersion_bands(phonon,bands_ranges,band_resolution=50,band_connection=False):
+def obtain_phonon_dispersion_bands(phonon, bands_ranges, band_resolution=50, band_connection=False):
     bands = []
     for q_start, q_end in bands_ranges:
         band = []
@@ -56,16 +58,20 @@ def obtain_phonon_dispersion_bands(phonon,bands_ranges,band_resolution=50,band_c
     return (bands_dict['qpoints'],
             bands_dict['distances'],
             bands_dict['frequencies'],
-            bands_dict['eigenvectors'])
+            bands_dict['eigenvectors']
+            )
 
 def run_dos(phonon, mesh):
-    phonon.run_mesh(mesh)
+    phonon.run_mesh(mesh, with_eigenvectors=True)
     phonon.run_total_dos(use_tetrahedron_method=True)
     dos_dict = phonon.get_total_dos_dict()
+    mesh_dict = phonon.get_mesh_dict()
+    eigenvectors = mesh_dict['eigenvectors']
     dos = np.array([dos_dict['frequency_points'], dos_dict['total_dos']])
-    np.savetxt("TDOS", dos)
-    print("[Phonopy] Phonon DOS:")
-    phonon.plot_total_dos().savefig("dos.png")
+    np.savetxt('TDOS', dos)
+    print('[Phonopy] Phonon DOS:')
+    phonon.plot_total_dos().savefig('dos.png')
+    return eigenvectors
 
 def run_pdos(phonon, mesh):
     phonon.run_mesh(mesh, with_eigenvectors=True, is_mesh_symmetry=False)
@@ -73,7 +79,7 @@ def run_pdos(phonon, mesh):
     pdos_dict = phonon.get_projected_dos_dict()
     for i in range(len(pdos_dict['projected_dos'])):
         pdos = np.array([pdos_dict['frequency_points'], pdos_dict['projected_dos'][i]])
-        np.savetxt(str(i) + ".pdos", pdos)
+        np.savetxt(str(i) + '.pdos', pdos)
     phonon.plot_projected_dos().show()
 
 def run_thermal(phonon,mesh):
@@ -86,27 +92,32 @@ def run_thermal(phonon,mesh):
     entropy = tp_dict['entropy']
     heat_capacity = tp_dict['heat_capacity']
     #for t, F, S, cv in zip(temperatures, free_energy, entropy, heat_capacity):
-    #    print(("%12.3f " + "%15.7f" * 3) % ( t, F, S, cv ))
-    phonon.plot_thermal_properties().show()  
+    #    print(('%12.3f ' + '%15.7f' * 3) % ( t, F, S, cv ))
+    phonon.plot_thermal_properties()
 
 def main():
-    with open("CCS_params.json", "r") as f:
+    with open('CCS_params.json', 'r') as f:
         CCS_params = json.load(f)
     calc = setup_model(CCS_params)
-    unitcell = read('LJ.db', do_not_split_by_at_sign=True) #vasp-format can only store 1 Atoms object.
-    #write('POSCAR', unitcell)
-    cell, _ = read_crystal_structure('POSCAR', interface_mode='vasp')
-    N = 3
+    unitcell = read('opt.traj', do_not_split_by_at_sign=True) #vasp-format can only store 1 Atoms object.
+    write('POSCAR', unitcell)
+    cell, _ = read_crystal_structure('POSCAR0p_Jolla', interface_mode='vasp')
+    N = 2
     smat = [[N, 0, 0], [0, N, 0], [0, 0, N]]
     phonon = Phonopy(cell, smat)
     phonon.generate_displacements(distance=0.02)
     set_of_forces = run_gap(calc, phonon)
     phonon.produce_force_constants(forces=set_of_forces)
-    mesh = (20, 20, 20)
-    #run_dos(phonon, mesh)
-    #run_pdos(phonon, mesh)
-    #run_thermal(phonon, mesh)
-    #os.chdir(base_dir+"/RUN_SIM/")obtain_phonon_dispersion_bands(phonon, )
+    mesh = (8, 8, 8)
+    run_dos(phonon, mesh)
+    run_thermal(phonon, mesh)
+    phonon.save(settings={'force_constants': True})
+    phonon = phonopy.load(supercell_matrix=[2, 2, 2],
+                    primitive_matrix='auto',
+                    unitcell_filename='POSCAR',
+                    force_constants_filename='force_constants.hdf5')
+   
 
-if __name__ == "__main__":
+    
+if __name__ == '__main__':
     main()
